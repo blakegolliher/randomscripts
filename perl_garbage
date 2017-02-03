@@ -1,0 +1,36 @@
+change out one part for another part
+perl -p -i.bak2 -e 's/nwk-its-filer118/nk11p00it-filer118/g' /tmp/fstab
+remove one line from a file
+perl -n -i.bak -e "print unless /pcilog/" /etc/fstab
+put a new mount under a specific line. Keep your fstab tidy.
+sudo perl -ni.bak -le 'print; print "nk11p00it-isia13.isi.apple.com:/ifs/nk11p00it-isia13/VideoSource1\t/opt/itms_storage/pod001/nk11p00it-isia13/VideoSource1\tnfs\tro,nosuid,soft,noatime,timeo=150,retrans=3,tcp,noauto,vers=3,rsize=65536,wsize=65536\t0\t0" if /nk11p00it-isia14/' /etc/fstab
+grep for two things on the same line.
+isi_for_array -s isi_hw_status | perl -ne 'if ((/Power Supplies OK/) || (/Power.* 0.00$/)) {print $_}'
+convert time since the epoch to regular date
+perl -e 'print scalar(localtime(1353533187)), "\n";'
+Quickly sort ip addresses by octet.
+sort -t . -k 1,1n -k 2,2n -k 3,3n -k 4,4n
+query what's nfs mounted on a host?
+snmptable -v2c -c itmssnmp nk11p00it-batchx001 hrStorageTable
+Removing a set of filers from an fstab.
+sudo rm /tmp/fstab; grep -v nwk-its-filer07[3-6|3-6] /etc/fstab > /tmp/fstab; cp /etc/fstab /etc/fstab.ORG; cp /tmp/fstab /etc/fstab ; umount /opt/itms_f7[3-5|3-5]v[1-8|1-8]
+Simple way to cleaning replace fstab. Cleaner then above.
+sudo cp /etc/fstab /etc/fstab.Sep1-bg ; sudo cat /etc/fstab | grep -v f7[7-8|7-8] > /tmp/fstab ; sudo cp /tmp/fstab /etc/fstab ; sudo umount /opt/itms_f7[7-8|7-8]
+Simple method to find every nfs client on a filer (nod to Gena for the tip)
+for i in {7..8} ; do echo === nwk-its-filer7${i} ==== ; sudo rsh nwk-its-filer7${i} 'netstat -an' | grep 2049 | awk '{print $2}' | cut -d. -f1-4 | sort -t . -k 1,1n -k 2,2n -k 3,3n -k 4,4n | uniq ; done
+How to put my ssh key everywhere. Run this on every machine.
+sudo /opt/itms/workspace/hosts/process_ssh.sh bgolliher
+Remove all vols and aggrs on older 8 volume filers.
+for i in {1..8} ; do sudo rsh nwk-its-filer76 "vol offline vol${i} ; vol destroy vol${i} -f ; aggr offline aggr${i} ; aggr destroy aggr${i} -f " ; done
+Wiki formating to have a table with highlighting and sorting.
+{table-plus:enableSorting=true|enableHighlighting=true|sortIcon=true|sortColumn=1}
+Fix ldap on a macosx box (thanks Ramesh)
+sudo slapconfig -setldapstatic 10.148.52.117 389 NOSSL "dc=mac,dc=com"
+Make a bunch of directories
+for i in {a..z} ; do mkdir dir${i} ; done
+Make a bunch of directories and sub directories
+for i in {a..z} ; do for j in {1..99} ; do mkdir -p /testsrc/dir${i} ; touch dir${i}/file${j} ; done ; done
+Find all Isilon cluster names (Thanks to Gena and Ramesh)
+grep --color isi'[a-z|a-z]*[0-9|0-9]\{2,3\}$' /etc/hosts
+Prints hostnames with padded 0's.
+for i in `printf "%03d\n" {1..18}`; do host cp-nk11p00it-isia12${i} ; done
